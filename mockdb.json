@@ -1,0 +1,22 @@
+{
+  "plans": [
+    {
+      "id": 1,
+      "title": "輕鬆方案",
+      "content": "cheap",
+      "cost": 950
+    },
+    {
+      "id": 2,
+      "title": "超值方案",
+      "content": "worth",
+      "cost": 1950
+    },
+    {
+      "id": 3,
+      "title": "豪華方案",
+      "content": "everything",
+      "cost": 2950
+    }
+  ]
+}
