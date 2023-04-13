@@ -18,5 +18,66 @@
       "content": "everything",
       "cost": 2950
     }
+  ],
+  "promoCodes": [
+    {
+      "code": "#12345",
+      "description": "雲市集店家",
+      "active": true
+    }
+  ],
+  "referralCodes": [
+    {
+      "code": "#12345",
+      "description": "雲市集店家",
+      "active": true,
+      "referSource": {
+
+      }
+    }
+  ],
+  "registration": [
+    {
+      "email": "kaijayhuang0730@gmail.com",
+      "name": "STAGE KJ Shop",
+      "address": "台中市南屯區大聖街333號",
+      "categories": [
+        "MensHaircut"
+      ],
+      "staffCount": "2-5人",
+      "userName": "KJ Huang",
+      "userPhone": "0976530730",
+      "phone": "0976530730",
+      "acknowledge": [
+        "SocialMedia",
+        "Referral"
+      ],
+      "description": "",
+      "createdOn": 1644462326,
+      "updatedOn": 1645517720,
+      "createdBy": "ffffffff-ffff-ffff-ffff-ffffffffffff",
+      "storeId": "11acb181-1697-4de1-8f2c-d5cf5dd2b144",
+      "logs": [
+        {
+          "test": "123",
+          "createdOn": 1235467
+        },
+        {
+          "test": "456",
+          "createdOn": 5468915616
+        },
+        {
+          "test": "123",
+          "createdOn": 1235467
+        },
+        {
+          "test": "456",
+          "createdOn": 5468915616
+        }
+      ],
+      "ip": "114.33.28.196",
+      "plan": "Easy_2022",
+      "type": "Business"
+    }
   ]
 }

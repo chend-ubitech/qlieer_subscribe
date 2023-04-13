@@ -44,7 +44,7 @@ console.log()
 
 <style scoped>
 .main {
-  background: #F5F8F9;
+  background: var(--color-white-100);
   padding: 80px 0;
   height: 100%;
 }
@@ -54,14 +54,14 @@ console.log()
   margin: auto;
 }
 .content {
-  background: #FFFFFF;
+  background: var(--color-white);
   display: flex;
   gap: 24px;
   flex-direction: column;
   align-items: center;
   max-width: 720px;
   margin: auto;
-  padding: 40px;
+  padding: 2.5rem;
 }
 .header {
   font-size: 1.5rem;
@@ -75,5 +75,15 @@ console.log()
 
 .stepper-container {
   width: 212px;
+}
+
+@media (max-width: 420px) {
+  .main {
+    padding: 0;
+  }
+
+  .logo-container {
+    display: none;
+  }
 }
 </style>

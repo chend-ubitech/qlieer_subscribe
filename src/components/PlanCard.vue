@@ -2,21 +2,26 @@
 import { computed } from 'vue'
 import SimpleDivider from '@/components/SimpleDivider.vue'
 
-const emit = defineEmits(['update-selected'])
-
 const props = defineProps({ 
   planData: { 
     type: Object, 
     required: true
   },
   selected: {
-    type: String,
-    default: ''
+    type: Object,
+    default() {
+      return { 
+        name: '', 
+        title: '', 
+        monthlyFee: 0, 
+        features: [] 
+      }
+    }
   }
 })
 
 const isSelected = computed(() => {
-  return props.selected === props.planData.name
+  return props.selected.name === props.planData.name
 })
 
 const tagEffect = computed(() => {
@@ -24,13 +29,12 @@ const tagEffect = computed(() => {
   return 'light'
 })
 
-const computedSelected = computed({
-  get() {
-    return props.selected
-  },
-  set(newValue) {
-    emit('update-selected', newValue)
+const radioIconSrc = computed(() => {
+  if (isSelected.value) {
+    return 'https://image.qlieer.app/icon/ic-beauty-checked-radio.svg'
   }
+
+  return 'https://image.qlieer.app/icon/ic-beauty-empty-radio.svg'
 })
 
 const formatMonthlyFee = (amount) => {
@@ -44,11 +48,7 @@ const formatMonthlyFee = (amount) => {
     :class="{ selected: isSelected }"
   >
     <div class="card-header">
-      <input 
-        v-model="computedSelected"
-        type="radio" 
-        :value="planData.name"        
-      >
+      <img :src="radioIconSrc">
       {{ planData.title }}
       <el-tag 
         type="info" 
@@ -85,14 +85,14 @@ const formatMonthlyFee = (amount) => {
 
 <style scoped>
 .pricing-plan-card {
-  border: 4px solid #F5F5F5;
+  border: 4px solid var(--color-muted-200);
   border-radius: 12px;
-  width: 205.33px;
-  padding: 16px;
+  min-width: 205.33px;
+  padding: 1rem;
 }
 
 .selected {
-  border-color: #76B9D9;
+  border-color: var(--color-primary-300);
 }
 
 .card-features-list {
