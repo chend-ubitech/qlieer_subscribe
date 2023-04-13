@@ -43,6 +43,7 @@ const selectedMethod = ref()
 const updateSelectedMethod = (selected) => {
   const method = methodsData.value.find(item => item.name === selected)
   registrationData.value = prepareData(selected)
+  resetFormValidation()
   selectedMethod.value = method
 }
 
@@ -57,6 +58,11 @@ const prepareData = (schemaKey) => {
   data.agreeToTerms = false
 
   return data
+}
+
+const resetFormValidation = () => {
+  if (!registrationFormRef.value) return
+  registrationFormRef.value.resetFields()
 }
 
 const registrationData = ref({})
