@@ -1,10 +1,35 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import MethodCard from '@/components/MethodCard.vue'
 import SimpleDivider from '@/components/SimpleDivider.vue';
 
 const router = useRouter()
+const registrationFormRef = ref(null)
+
+const registrationValidationRules = reactive({
+  name: [
+    { required: true, message: 'Field required', trigger: 'blur' }
+  ],
+  phone: [
+    { required: true, message: 'Field required', trigger: 'blur' }
+  ],
+  email: [
+    { required: true, message: 'Field required', trigger: 'blur' }
+  ],
+  id: [
+    { required: true, message: 'Field required', trigger: 'blur' }
+  ],
+  companyName: [
+    { required: true, message: 'Field required', trigger: 'blur' }
+  ],
+  companyTaxId: [
+    { required: true, message: 'Field required', trigger: 'blur' }
+  ],
+  companyAddress: [
+    { required: true, message: 'Field required', trigger: 'blur' }
+  ]
+})
 
 const methodsDataRaw = [
   { name: 'business', title: '公司帳號申請', icon: 'https://image.qlieer.app/icon/ic-beauty-form-send.svg' },
@@ -108,8 +133,16 @@ const toPricingPage = () => {
   router.push({ name: 'pricing', params: {} })
 }
 
-const toCheckoutPage = () => {
-  router.push({ name: 'checkout', params: {} })
+const toCheckoutPage = async () => {
+  if (!registrationFormRef.value) return
+  console.log(registrationFormRef.value)
+  await registrationFormRef.value.validate((valid, fields) => {
+    if (valid) {
+      router.push({ name: 'checkout', params: {} })
+    } else {
+      console.log('missing fields:', fields)
+    }
+  })
 }
 </script>
 
@@ -157,7 +190,12 @@ const toCheckoutPage = () => {
     </div>
     <template v-if="selectedMethod">
       <SimpleDivider /> 
-      <el-form class="registration-form">
+      <el-form 
+        ref="registrationFormRef"
+        class="registration-form"
+        :rules="registrationValidationRules"
+        :model="registrationData"
+      >
         <div 
           v-for="(field, key) in currentSchema"
           :key="key"
@@ -165,6 +203,7 @@ const toCheckoutPage = () => {
         >
           <el-form-item 
             class="form-item"
+            :prop="key"
           >
             <div 
               class="wrap-item-label"
