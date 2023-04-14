@@ -7,66 +7,6 @@ import SimpleDivider from '@/components/SimpleDivider.vue';
 const router = useRouter()
 const registrationFormRef = ref(null)
 
-const registrationValidationRules = reactive({
-  name: [
-    { required: true, message: 'Field required', trigger: 'blur' }
-  ],
-  phone: [
-    { required: true, message: 'Field required', trigger: 'blur' }
-  ],
-  email: [
-    { required: true, message: 'Field required', trigger: 'blur' }
-  ],
-  id: [
-    { required: true, message: 'Field required', trigger: 'blur' }
-  ],
-  companyName: [
-    { required: true, message: 'Field required', trigger: 'blur' }
-  ],
-  companyTaxId: [
-    { required: true, message: 'Field required', trigger: 'blur' }
-  ],
-  companyAddress: [
-    { required: true, message: 'Field required', trigger: 'blur' }
-  ]
-})
-
-const methodsDataRaw = [
-  { name: 'business', title: '公司帳號申請', icon: 'https://image.qlieer.app/icon/ic-beauty-form-send.svg' },
-  { name: 'personal', title: '個人帳號申請', icon: 'https://image.qlieer.app/icon/ic-beauty-form-send.svg' },
-]
-
-const methodsData = ref(methodsDataRaw)
-
-const selectedMethod = ref()
-
-const updateSelectedMethod = (selected) => {
-  const method = methodsData.value.find(item => item.name === selected)
-  registrationData.value = prepareData(selected)
-  resetFormValidation()
-  selectedMethod.value = method
-}
-
-const prepareData = (schemaKey) => {
-  const schema = formSchemas[schemaKey]
-  const data = {}
-
-  for (const prop in schema) {
-    data[prop] = ''
-  }
-
-  data.agreeToTerms = false
-
-  return data
-}
-
-const resetFormValidation = () => {
-  if (!registrationFormRef.value) return
-  registrationFormRef.value.resetFields()
-}
-
-const registrationData = ref({})
-
 const formSchemas = {
   business: {
     name: {
@@ -129,11 +69,90 @@ const formSchemas = {
   }
 }
 
+const selectedMethod = ref()
 const currentSchema = computed(() => {
   if (!selectedMethod.value) return {}
 
   return formSchemas[selectedMethod.value.name]
 })
+
+const resetFormValidation = () => {
+  if (!registrationFormRef.value) return
+  registrationFormRef.value.resetFields()
+}
+
+// Attempted to generate rules dynamically by looking at the currentSchema
+// but doing so triggers validation when new rules are set.
+const registrationValidationRules = reactive({
+  name: [
+    { required: true, message: 'Field required', trigger: 'blur' }
+  ],
+  phone: [
+    { required: true, message: 'Field required', trigger: 'blur' }
+  ],
+  email: [
+    { required: true, message: 'Field required', trigger: 'blur' }
+  ],
+  id: [
+    { required: true, message: 'Field required', trigger: 'blur' }
+  ],
+  companyName: [
+    { required: true, message: 'Field required', trigger: 'blur' }
+  ],
+  companyTaxId: [
+    { required: true, message: 'Field required', trigger: 'blur' }
+  ],
+  companyAddress: [
+    { required: true, message: 'Field required', trigger: 'blur' }
+  ]
+})
+
+const methodsDataRaw = [
+  { name: 'business', title: '公司帳號申請', icon: 'https://image.qlieer.app/icon/ic-beauty-form-send.svg' },
+  { name: 'personal', title: '個人帳號申請', icon: 'https://image.qlieer.app/icon/ic-beauty-form-send.svg' },
+]
+
+const methodsData = ref(methodsDataRaw)
+
+const updateSelectedMethod = (selected) => {
+  const method = methodsData.value.find(item => item.name === selected)
+  registrationData.value = prepareData(selected)
+  selectedMethod.value = method
+  resetFormValidation()
+}
+
+const prepareData = (schemaKey) => {
+  const schema = formSchemas[schemaKey]
+  const data = {}
+
+  for (const prop in schema) {
+    data[prop] = ''
+  }
+
+  data.agreeToTerms = false
+
+  return data
+}
+
+const registrationData = ref({})
+
+// show 必填 for all props with value of true
+const requiredTracker = reactive({})
+const setRequiredTracker = (errFields) => {
+  for (const key in errFields) {
+    if (!registrationData.value[key]) {
+      requiredTracker[key] = true
+    }
+  }
+}
+
+const updateRequiredTracker = (key) => {
+  if (!registrationData.value[key]) {
+    requiredTracker[key] = true
+  } else {
+    requiredTracker[key] = false
+  }
+}
 
 const toPricingPage = () => {
   router.push({ name: 'pricing', params: {} })
@@ -141,12 +160,11 @@ const toPricingPage = () => {
 
 const toCheckoutPage = async () => {
   if (!registrationFormRef.value) return
-  console.log(registrationFormRef.value)
   await registrationFormRef.value.validate((valid, fields) => {
     if (valid) {
       router.push({ name: 'checkout', params: {} })
     } else {
-      console.log('missing fields:', fields)
+      setRequiredTracker(fields)
     }
   })
 }
@@ -222,7 +240,7 @@ const toCheckoutPage = async () => {
                 >＊</span>{{ field.label }}                
               </span>
               <span 
-                v-if="field.required"
+                v-if="field.required && requiredTracker[key]"
                 class="required-text"
               >
                 必填
@@ -231,6 +249,7 @@ const toCheckoutPage = async () => {
             <el-input 
               v-model="registrationData[key]" 
               class="form-input"
+              @blur="updateRequiredTracker(key)"
             />
           </el-form-item>
         </div>
