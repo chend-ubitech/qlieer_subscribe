@@ -6,6 +6,38 @@ import SimpleDivider from '@/components/SimpleDivider.vue';
 const router = useRouter()
 
 const tempVal = ref('')
+
+const paymentOptions = [
+  {
+    name: 'creditCard',
+    label: '信用卡',
+    tooltip: '支援 Visa, JCB, Master',
+    icon: ''
+  },
+  {
+    name: 'ATM',
+    label: 'ATM 轉帳',
+    tooltip: '透過銀行轉帳金額',
+    icon: ''
+  }
+]
+const receiptOptions = [
+  {
+    name: 'eBusinessReceipt',
+    label: '營業人電子發票',
+    tooltip: '需要統一編號成立發票'
+  },
+  {
+    name: 'eMemberReceipt',
+    label: '會員載具',
+    tooltip: '客立樂將直接申請為會員並存入載具'
+  },
+  {
+    name: 'mobileCodeReceipt',
+    label: '手機條碼載具',
+    tooltip: '需要你提供手機條碼'
+  }
+]
 </script>
 
 <template>
@@ -20,8 +52,23 @@ const tempVal = ref('')
             v-model="tempVal"
             class="checkout-radio-group"
           >
-            <el-radio label="Sponsorship" />
-            <el-radio label="Venue" />
+            <div 
+              v-for="option in paymentOptions"
+              :key="option.name"
+              class="radio-option-row"
+            >
+              <el-radio :label="option.name">
+                <div class="custom-radio-label">
+                  <div class="checkout-label-left">
+                    <div class="option-label">{{ option.label }}</div>
+                    <div class="option-tooltip">{{ option.tooltip }}</div>
+                  </div>
+                  <div class="custom-label-right">
+                    🐳
+                  </div>                
+                </div>
+              </el-radio>
+            </div>
           </el-radio-group>
         </div>
       </el-form-item>
@@ -36,30 +83,117 @@ const tempVal = ref('')
             v-model="tempVal"
             class="checkout-radio-group"
           >
-            <el-radio label="Sponsorship" />
-            <el-radio label="Venue" />
+            <div 
+              v-for="option in receiptOptions"
+              :key="option.name"
+              class="radio-option-row"
+            >
+              <el-radio :label="option.name">
+                <div class="custom-radio-label">
+                  <div class="checkout-label-left">
+                    <div class="option-label">{{ option.label }}</div>
+                    <div class="option-tooltip">{{ option.tooltip }}</div>
+                  </div>               
+                </div>
+              </el-radio>
+            </div>
           </el-radio-group>
         </div>
       </el-form-item>
     </el-form>
+    <div class="payment-details-container">
+      <div class="payment-details-row">
+        <span>Easy Plan</span>
+        <span>$999</span>
+      </div>
+      <div class="payment-details-row">
+        <span>小計</span>
+        <span>$999</span>
+      </div>
+      <div class="payment-details-row">
+        <span>推薦代碼 #LASK721(獨角獸)</span>
+      </div>
+      <div class="payment-details-row">
+        <span>優惠碼 #12345 (九折,贈送模組,贈送2月)</span>
+        <span>-$213</span>
+      </div>
+      <div class="payment-details-row payment-details-total">
+        <span>總金額</span>
+        <span class="wrap-total-details">
+          <span class="total">$1,950</span>
+          <span>方案加上加購項目再乘以 12 個月計算</span>
+        </span>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .checkout-page {
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  gap: 24px;
+}
+
+.checkout-form {
 }
 .wrap-form-item-content {
   display: flex;
   flex-direction: column;
+  width: 95%
 }
 
 .checkout-radio-group {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  gap: 8px;
+}
+
+.radio-option-row {
+  display: flex;
+  align-items: center;
   border: 2px solid var(--color-muted-200);
-  padding: 1rem;
+  padding: 1rem 1rem 1rem 1.5rem;
   border-radius: 12px;
+  width: 100%;
+}
+
+.el-radio {
+  display: flex;
+  width: 100%;
+}
+
+:deep(.el-radio__input) {
+  flex: 1;
+}
+
+:deep(.el-radio__label) {
+  width: 100%;
+}
+
+.custom-radio-label {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.checkout-label-left {
+  padding-left: 0.5rem;
+}
+
+.option-label {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.375rem;
+}
+
+.option-tooltip {
+  line-height: 1.25rem;
+}
+
+.custom-label-right {
+  font-size: 1.25rem;
 }
 </style>
