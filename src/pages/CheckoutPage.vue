@@ -2,6 +2,7 @@
 import { ref, computed, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import SimpleDivider from '@/components/SimpleDivider.vue';
+import InvoiceSection from '@/components/InvoiceSection.vue'
 
 const router = useRouter()
 
@@ -101,30 +102,7 @@ const receiptOptions = [
         </div>
       </el-form-item>
     </el-form>
-    <div class="payment-details-container">
-      <div class="payment-details-row">
-        <span>Easy Plan</span>
-        <span>$999</span>
-      </div>
-      <div class="payment-details-row">
-        <span>小計</span>
-        <span>$999</span>
-      </div>
-      <div class="payment-details-row">
-        <span>推薦代碼 #LASK721(獨角獸)</span>
-      </div>
-      <div class="payment-details-row">
-        <span>優惠碼 #12345 (九折,贈送模組,贈送2月)</span>
-        <span>-$213</span>
-      </div>
-      <div class="payment-details-row payment-details-total">
-        <span>總金額</span>
-        <span class="wrap-total-details">
-          <span class="total">$1,950</span>
-          <span>方案加上加購項目再乘以 12 個月計算</span>
-        </span>
-      </div>
-    </div>
+    <InvoiceSection />
   </div>
 </template>
 

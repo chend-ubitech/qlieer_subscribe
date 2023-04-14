@@ -1,11 +1,13 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import InvoiceSection from '@/components/InvoiceSection.vue'
 import PlanCard from '@/components/PlanCard.vue'
 import SimpleDivider from '@/components/SimpleDivider.vue';
-import { toDollar } from '@/utils.js'
+import { useSignupInfoStore } from '@/stores/signupInfo';
 
 const router = useRouter()
+const signupInfoStore = useSignupInfoStore()
 
 const pricingPlansRaw = [
   { name: 'Easy_2022', title: '輕鬆方案', monthlyFee: 950, features: ['商店網站', '個人網站 1 個', '使用人數 1 人', '會員數 800 位', '精準行銷模組 5 組'] },
@@ -20,11 +22,11 @@ const pricingPlansComputed = computed(() => {
   return pricingData
 })
 
-const selectedPlan = ref(pricingPlansComputed.value[1])
+signupInfoStore.updateSelectedPlan(pricingPlansComputed.value[1])
 
 const updateSelected = (selected) => {
   const plan = pricingPlansComputed.value.find(item => item.name === selected)
-  selectedPlan.value = plan
+  signupInfoStore.updateSelectedPlan(plan)
 }
 
 const promoCode = ref('')
@@ -36,10 +38,6 @@ const shoppingCartItems = [{
   cost: 0,
   discounts: { code: '', amount: 0 }
 }]
-
-const total = computed(() => {
-  return '$1900'
-})
 
 const toRegistrationPage = () => {
   router.push({ name: 'registration', params: {} })
@@ -59,7 +57,7 @@ const toRegistrationPage = () => {
         >
           <PlanCard 
             :plan-data="planData" 
-            :selected="selectedPlan" 
+            :selected="signupInfoStore.selectedPlan" 
             @update-selected="updateSelected"  
             @click="updateSelected(planData.name)"        
           />
@@ -87,30 +85,7 @@ const toRegistrationPage = () => {
         />
       </el-form-item>
     </div>
-    <div class="payment-details-container">
-      <div class="payment-details-row">
-        <span>{{ selectedPlan.title }}</span>
-        <span>{{ toDollar(selectedPlan.monthlyFee) }}</span>
-      </div>
-      <div class="payment-details-row">
-        <span>小計</span>
-        <span>{{ total }}</span>
-      </div>
-      <div class="payment-details-row">
-        <span>推薦代碼 #LASK721(獨角獸)</span>
-      </div>
-      <div class="payment-details-row">
-        <span>優惠碼 #12345 (九折,贈送模組,贈送2月)</span>
-        <span>-$213</span>
-      </div>
-      <div class="payment-details-row payment-details-total">
-        <span>總金額</span>
-        <span class="wrap-total-details">
-          <span class="total">$1,950</span>
-          <span>方案加上加購項目再乘以 12 個月計算</span>
-        </span>
-      </div>
-    </div>
+    <InvoiceSection />
     <SimpleDivider />
     <div class="wrap-actions">
       <el-button 
@@ -159,28 +134,6 @@ const toRegistrationPage = () => {
   color: var(--color-dark-700);
   font-size: 1.125rem;
   font-weight: 500;
-  line-height: 1.375rem;
-}
-
-.payment-details-container {
-  padding: 0 0.5rem;
-}
-
-.payment-details-row {
-  display: flex;
-  justify-content: space-between;
-}
-
-.wrap-total-details {
-  display: flex;
-  flex-direction: column;
-  align-items: end;
-}
-
-.total {
-  color: var(--color-dark-700);
-  font-weight: 700;
-  font-size: 1.25rem;
   line-height: 1.375rem;
 }
 

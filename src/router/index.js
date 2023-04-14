@@ -1,6 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import MainPage from '../pages/MainPage.vue'
 import LoginPage from '../pages/LoginPage.vue'
+import { useSignupInfoStore } from '@/stores/signupInfo';
+
+
+const hasSelectedPlan = (to) => {
+  const signupInfoStore = useSignupInfoStore()
+  if (!signupInfoStore.selectedPlan.name) { 
+    return { name: 'pricing', query: to.query, params: to.params }
+  }
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,12 +35,14 @@ const router = createRouter({
         {
           path: '/registration',
           name: 'registration',
-          component: () => import('../pages/RegistrationPage.vue')
+          component: () => import('../pages/RegistrationPage.vue'),
+          beforeEnter: [hasSelectedPlan]
         },
         {
           path: '/checkout',
           name: 'checkout',
-          component: () => import('../pages/CheckoutPage.vue')
+          component: () => import('../pages/CheckoutPage.vue'),
+          beforeEnter: [hasSelectedPlan]
         }
       ]
     },  
