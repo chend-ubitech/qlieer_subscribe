@@ -85,25 +85,28 @@ const resetFormValidation = () => {
 // but doing so triggers validation when new rules are set.
 const registrationValidationRules = reactive({
   name: [
-    { required: true, message: 'Field required', trigger: 'blur' }
+    { required: true, message: '', trigger: 'blur' }
   ],
   phone: [
-    { required: true, message: 'Field required', trigger: 'blur' }
+    { required: true, message: '', trigger: 'blur' }
   ],
   email: [
-    { required: true, message: 'Field required', trigger: 'blur' }
+    { required: true, message: '', trigger: 'blur' }
   ],
   id: [
-    { required: true, message: 'Field required', trigger: 'blur' }
+    { required: true, message: '', trigger: 'blur' }
   ],
   companyName: [
-    { required: true, message: 'Field required', trigger: 'blur' }
+    { required: true, message: '', trigger: 'blur' }
   ],
   companyTaxId: [
-    { required: true, message: 'Field required', trigger: 'blur' }
+    { required: true, message: '', trigger: 'blur' }
   ],
   companyAddress: [
-    { required: true, message: 'Field required', trigger: 'blur' }
+    { required: true, message: '', trigger: 'blur' }
+  ],
+  agreeToTerms: [
+    { type: 'array', required: true, message: '未同意條款細則', trigger: 'change' }
   ]
 })
 
@@ -129,7 +132,7 @@ const prepareData = (schemaKey) => {
     data[prop] = ''
   }
 
-  data.agreeToTerms = false
+  data.agreeToTerms = []
 
   return data
 }
@@ -165,6 +168,7 @@ const toCheckoutPage = async () => {
       router.push({ name: 'checkout', params: {} })
     } else {
       setRequiredTracker(fields)
+      console.log(fields)
     }
   })
 }
@@ -220,60 +224,66 @@ const toCheckoutPage = async () => {
         :rules="registrationValidationRules"
         :model="registrationData"
       >
-        <div 
-          v-for="(field, key) in currentSchema"
-          :key="key"
-          class="form-field"
-        >
-          <el-form-item 
-            class="form-item"
-            :prop="key"
+        <div class="registration-form-top">
+          <div 
+            v-for="(field, key) in currentSchema"
+            :key="key"
+            class="form-field"
           >
-            <div 
-              class="wrap-item-label"
-              :class="{ 'required-label': field.required }"
+            <el-form-item 
+              class="form-item"
+              :prop="key"
             >
-              <span>
-                <span 
-                  v-if="field.required"
-                  class="required-star"
-                >＊</span>{{ field.label }}                
-              </span>
-              <span 
-                v-if="field.required && requiredTracker[key]"
-                class="required-text"
+              <div 
+                class="wrap-item-label"
+                :class="{ 'required-label': field.required }"
               >
-                必填
-              </span>
+                <span>
+                  <span 
+                    v-if="field.required"
+                    class="required-star"
+                  >＊</span>{{ field.label }}                
+                </span>
+                <span 
+                  v-if="field.required && requiredTracker[key]"
+                  class="required-text"
+                >
+                  必填
+                </span>
+              </div>
+              <el-input 
+                v-model="registrationData[key]" 
+                class="form-input"
+                @blur="updateRequiredTracker(key)"
+              />
+            </el-form-item>
+          </div>
+          <SimpleDivider class="mt-2" /> 
+        </div>
+        <div class="terms">
+          <div class="terms-header">
+            <div class="terms-title">
+              條款及細則
             </div>
-            <el-input 
-              v-model="registrationData[key]" 
-              class="form-input"
-              @blur="updateRequiredTracker(key)"
-            />
+            <div class="terms-hint">
+              瀏覽捲動完成條款及細則後，勾選我已閱讀並同意以上條款及細則。
+            </div>
+          </div>
+          <div class="terms-content">客立樂依據個人資料保護法規定，向您告知以下事項：
+            個人資料將用於本系統之預約商店預約功能（下稱「本系統服務」），當您向預約商店預約完成後，您同意預約商店將會提供您的個人資料予客立樂，本系統將會依據您提供之個人資料採取後續措施，包括但不限於：傳送確認簡訊、通知簡訊以及服務後滿意度調查等，以控管您於預約商店之預約情形；其他於特定目的與使用類別之範圍內，基於推廣本系統及預約商店之業務需求，而由客立樂或客立樂指定之第三方以電腦化或其他相類之數據方式處理、利用之行為；作為客立樂指定之第三方各種推播資訊之基礎，包含但不限於透過電子郵件、實體郵件、電話與簡訊等方式提供客立樂指定之第三方或其關係企業之行銷資訊。作為客立樂指定之第三方或其關係企業優化服務內容之市場調查依據，並得與其內部之管理系統結合、匯入、建檔或以一定之方式備份、留存。其他符合個資法第20條規定之利用。
+          </div>
+          <el-form-item 
+            class="terms-agree"
+            :prop="'agreeToTerms'"
+          >
+            <el-checkbox-group v-model="registrationData.agreeToTerms">
+              <el-checkbox 
+                label="我已閱讀並同意以上條款及細則"
+              />
+            </el-checkbox-group>
           </el-form-item>
         </div>
       </el-form>
-      <SimpleDivider /> 
-      <div class="terms">
-        <div class="terms-header">
-          <div class="terms-title">
-            條款及細則
-          </div>
-          <div class="terms-hint">
-            瀏覽捲動完成條款及細則後，勾選我已閱讀並同意以上條款及細則。
-          </div>
-        </div>
-        <div class="terms-content">客立樂依據個人資料保護法規定，向您告知以下事項：
-          個人資料將用於本系統之預約商店預約功能（下稱「本系統服務」），當您向預約商店預約完成後，您同意預約商店將會提供您的個人資料予客立樂，本系統將會依據您提供之個人資料採取後續措施，包括但不限於：傳送確認簡訊、通知簡訊以及服務後滿意度調查等，以控管您於預約商店之預約情形；其他於特定目的與使用類別之範圍內，基於推廣本系統及預約商店之業務需求，而由客立樂或客立樂指定之第三方以電腦化或其他相類之數據方式處理、利用之行為；作為客立樂指定之第三方各種推播資訊之基礎，包含但不限於透過電子郵件、實體郵件、電話與簡訊等方式提供客立樂指定之第三方或其關係企業之行銷資訊。作為客立樂指定之第三方或其關係企業優化服務內容之市場調查依據，並得與其內部之管理系統結合、匯入、建檔或以一定之方式備份、留存。其他符合個資法第20條規定之利用。
-        </div>
-        <div class="terms-agree">
-          <el-checkbox 
-            v-model="registrationData.agreeToTerms" 
-            label="我已閱讀並同意以上條款及細則"
-          />
-        </div>
-      </div>
     </template>
     <SimpleDivider /> 
     <div class="wrap-actions">
@@ -356,6 +366,12 @@ const toCheckoutPage = async () => {
 }
 
 .registration-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.registration-form-top {
   display: flex;
   flex-wrap: wrap;
   gap: 1.5%;

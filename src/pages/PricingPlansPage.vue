@@ -68,13 +68,19 @@ const toRegistrationPage = () => {
     </div>
     <SimpleDivider />
     <div class="promo-form">
-      <el-form-item label="你是否有優惠碼?">
+      <el-form-item>
+        <div class="promo-input-label">
+          你是否有優惠碼?
+        </div>
         <el-input 
           v-model="promoCode" 
           type="text" 
         />
       </el-form-item>
-      <el-form-item label="你是否有推薦碼?">
+      <el-form-item>
+        <div class="promo-input-label">
+          你是否有推薦碼?
+        </div>
         <el-input 
           v-model="referralCode"
           type="text" 
@@ -139,6 +145,21 @@ const toRegistrationPage = () => {
   display: flex;
   gap: 12px;
   width: 100%;
+}
+
+.promo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.promo-input-label {
+  padding-left: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-dark-700);
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.375rem;
 }
 
 .payment-details-container {
